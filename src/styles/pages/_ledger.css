@@ -1,0 +1,486 @@
+/* ══ SMART LEDGER SYSTEM ═══════════════════════════════════════════
+   Replaces the old Party Ledger drawer styles entirely.
+   The old .ledger-drawer-* classes are removed.
+════════════════════════════════════════════════════════════════════ */
+
+/* ── Colour tokens ── */
+:root {
+  --sl-dr: #dc2626;
+  --sl-cr: #16a34a;
+  --sl-dr-bg: #fef2f2;
+  --sl-cr-bg: #f0fdf4;
+}
+
+/* ── Summary stat row ── */
+.sl-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: .75rem;
+  margin-bottom: 1rem;
+}
+.sl-stat-box {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: .875rem 1rem;
+  text-align: center;
+}
+.sl-stat-label {
+  font-size: .65rem;
+  font-weight: 700;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: .25rem;
+}
+.sl-stat-val {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--slate-800);
+  line-height: 1.15;
+}
+.sl-stat-val.sl-dr { color: var(--sl-dr); }
+.sl-stat-val.sl-cr { color: var(--sl-cr); }
+
+/* ── Filter bar ── */
+.sl-filter-bar {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: .75rem 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.sl-filter-btn {
+  padding: .35rem .75rem;
+  border: 1px solid var(--slate-200);
+  border-radius: 9999px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: #fff;
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all .15s;
+}
+.sl-filter-btn:hover { background: var(--slate-50); }
+.sl-filter-btn.active { background: var(--blue); color: #fff; border-color: var(--blue); }
+.sl-filter-btn.dr.active  { background: var(--sl-dr); border-color: var(--sl-dr); }
+.sl-filter-btn.cr.active  { background: var(--sl-cr); border-color: var(--sl-cr); }
+
+.sl-search-wrap { flex: 1; min-width: 180px; position: relative; }
+.sl-search-wrap svg { position: absolute; left: .6rem; top: 50%; transform: translateY(-50%); width: .85rem; height: .85rem; color: var(--slate-400); pointer-events: none; }
+.sl-search-wrap input { padding-left: 2rem; }
+
+/* ── Company card grid ── */
+.sl-company-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: .875rem;
+}
+.sl-party-card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  cursor: pointer;
+  transition: box-shadow .15s, border-color .15s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.sl-party-card:hover {
+  box-shadow: 0 4px 20px rgba(0,0,0,.09);
+  border-color: var(--slate-300);
+}
+
+.sl-party-card-top {
+  display: flex;
+  align-items: flex-start;
+  gap: .75rem;
+  padding: 1rem 1rem .75rem;
+}
+.sl-party-avatar {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: .5rem;
+  background: var(--blue-l);
+  color: var(--blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: .8rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.sl-party-info { flex: 1; min-width: 0; }
+.sl-party-name {
+  font-size: .875rem;
+  font-weight: 700;
+  color: var(--slate-800);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.sl-party-sub  { font-size: .68rem; color: var(--slate-400); margin-top: .15rem; }
+
+/* Badges */
+.sl-badge {
+  font-size: .62rem;
+  font-weight: 700;
+  padding: .2rem .55rem;
+  border-radius: 9999px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.sl-badge-dr  { background: var(--sl-dr-bg); color: var(--sl-dr); }
+.sl-badge-cr  { background: var(--sl-cr-bg); color: var(--sl-cr); }
+.sl-badge-nil { background: var(--slate-100); color: var(--slate-500); }
+
+.sl-party-card-body {
+  padding: .5rem 1rem .75rem;
+  border-top: 1px solid var(--slate-100);
+  flex: 1;
+}
+.sl-party-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .2rem 0;
+}
+.sl-party-balance-row {
+  margin-top: .35rem;
+  padding-top: .35rem;
+  border-top: 1px solid var(--slate-100);
+}
+.sl-lbl { font-size: .72rem; color: var(--slate-500); }
+.sl-val { font-size: .78rem; font-weight: 600; color: var(--slate-700); }
+.sl-dr  { color: var(--sl-dr) !important; }
+.sl-cr  { color: var(--sl-cr) !important; }
+.sl-nil { color: var(--slate-400) !important; }
+
+.sl-party-card-foot {
+  display: flex;
+  gap: .375rem;
+  padding: .625rem 1rem;
+  border-top: 1px solid var(--slate-100);
+  background: var(--slate-50);
+}
+.sl-small-btn {
+  font-size: .7rem !important;
+  padding: .3rem .6rem !important;
+  flex: 1;
+  justify-content: center;
+}
+
+/* ── Detail view header ── */
+.sl-detail-header {
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+.sl-back-btn {
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: var(--blue);
+  font-size: .85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: .3rem;
+  padding: 0;
+  white-space: nowrap;
+}
+.sl-back-btn:hover { text-decoration: underline; }
+.sl-detail-title-block { flex: 1; min-width: 0; }
+.sl-detail-title { font-size: 1.2rem; font-weight: 800; color: var(--slate-800); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sl-detail-sub   { font-size: .72rem; color: var(--slate-400); margin-top: .1rem; }
+
+.sl-detail-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: .625rem;
+  margin-bottom: .875rem;
+}
+
+/* ── Tally-style ledger table ── */
+.sl-tbl-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  background: #fff;
+}
+table.sl-tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .8rem;
+}
+.sl-tbl thead th {
+  background: #ddeeff;
+  padding: .5rem .75rem;
+  text-align: left;
+  font-size: .72rem;
+  font-weight: 700;
+  color: #1e3a5f;
+  border-bottom: 2px solid #000;
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.sl-tbl thead th.r { text-align: right; }
+.sl-tbl td {
+  padding: .45rem .75rem;
+  border-bottom: 1px solid #f0f0f0;
+  color: var(--slate-700);
+  white-space: nowrap;
+  vertical-align: top;
+}
+.sl-tbl tbody tr:hover td { background: #f8fafc; }
+.sl-tbl tbody tr.sl-cr-row { background: #f9fff9; }
+
+/* Opening / closing balance rows — Tally style */
+.sl-ob-row td {
+  background: #fffef0 !important;
+  font-style: italic;
+  font-size: .8rem;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+/* Grand total row */
+.sl-tot-row td {
+  background: #fffef0;
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  font-weight: 700;
+}
+
+/* Cell classes */
+.sl-dt   { width: 80px; font-size: .75rem; color: var(--slate-600); }
+.sl-part { min-width: 180px; }
+.sl-narr { font-size: .7rem; color: var(--slate-400); white-space: normal; line-height: 1.4; }
+.sl-lr-tag {
+  font-size: .6rem;
+  font-weight: 700;
+  background: var(--blue-l);
+  color: var(--blue);
+  padding: .1rem .4rem;
+  border-radius: 9999px;
+  margin-left: .3rem;
+  vertical-align: middle;
+}
+.sl-vt   { width: 72px; font-size: .75rem; color: var(--slate-500); }
+.sl-vn   { width: 86px; font-size: .75rem; font-family: monospace; color: var(--slate-500); }
+.sl-amt  { text-align: right; width: 100px; font-family: 'Courier New', monospace; font-size: .8rem; }
+.sl-bal  { text-align: right; width: 110px; font-family: 'Courier New', monospace; font-size: .8rem; font-weight: 600; }
+
+/* Delete button in table rows */
+.sl-row-del {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--slate-300);
+  font-size: .85rem;
+  transition: color .15s;
+  padding: .15rem .3rem;
+  border-radius: .25rem;
+}
+.sl-row-del:hover { color: var(--red); background: var(--sl-dr-bg); }
+
+/* ── Modal overlay ── */
+.sl-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: rgba(15, 23, 42, .55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .2s;
+  will-change: opacity;
+}
+.sl-modal-overlay.open {
+  opacity: 1;
+  pointer-events: auto;
+}
+.sl-modal-box {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 1.75rem;
+  width: 100%;
+  max-width: 480px;
+  transform: translateY(16px);
+  transition: transform .2s;
+  max-height: 92vh;
+  overflow-y: auto;
+}
+.sl-modal-overlay.open .sl-modal-box {
+  transform: translateY(0);
+}
+.sl-modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.25rem;
+}
+.sl-modal-head h3 { font-size: 1rem; font-weight: 700; color: var(--slate-800); }
+.sl-modal-close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--slate-400);
+  font-size: 1.3rem;
+  line-height: 1;
+  padding: .2rem;
+  border-radius: .25rem;
+  transition: color .15s;
+}
+.sl-modal-close:hover { color: var(--red); }
+
+/* ── Debit / Credit toggle ── */
+.sl-side-row {
+  display: flex;
+  gap: .5rem;
+  margin-bottom: .5rem;
+}
+.sl-side-btn {
+  flex: 1;
+  padding: .625rem;
+  border: 2px solid var(--slate-200);
+  border-radius: .5rem;
+  font-size: .875rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: #fff;
+  transition: all .15s;
+  text-align: center;
+}
+.sl-side-btn:hover { background: var(--slate-50); }
+#sl-btn-debit.active  { background: var(--sl-dr-bg); border-color: var(--sl-dr); color: var(--sl-dr); }
+#sl-btn-credit.active { background: var(--sl-cr-bg); border-color: var(--sl-cr); color: var(--sl-cr); }
+
+.sl-hint {
+  font-size: .72rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  min-height: 1rem;
+  padding: .4rem .6rem;
+  border-radius: .375rem;
+  background: var(--slate-50);
+}
+
+/* ── Form fields in modal ── */
+.sl-field { margin-bottom: .875rem; }
+.sl-field label {
+  display: block;
+  font-size: .7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: .05em;
+  color: var(--slate-600);
+  margin-bottom: .35rem;
+}
+.sl-err {
+  font-size: .75rem;
+  color: var(--red);
+  margin-top: .5rem;
+  min-height: 1rem;
+  font-weight: 600;
+}
+
+/* ── Empty state ── */
+.sl-empty {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--slate-400);
+}
+.sl-empty svg {
+  width: 3rem;
+  height: 3rem;
+  margin: 0 auto 1rem;
+  opacity: .3;
+  display: block;
+}
+.sl-empty h3 { font-size: .95rem; font-weight: 700; color: var(--slate-500); margin-bottom: .4rem; }
+.sl-empty p  { font-size: .8rem; line-height: 1.6; max-width: 320px; margin: 0 auto; }
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sl-stats          { grid-template-columns: 1fr 1fr; }
+  .sl-company-grid   { grid-template-columns: 1fr; }
+  .sl-detail-stats   { grid-template-columns: 1fr; }
+  .sl-detail-header  { flex-wrap: wrap; }
+}
+@media (max-width: 480px) {
+  .sl-stats { grid-template-columns: 1fr 1fr; }
+  .sl-modal-box { padding: 1.25rem; }
+}
+
+/* ── Delete company button on card ── */
+.sl-del-co-btn {
+  background: none;
+  border: 1px solid transparent;
+  color: var(--slate-300);
+  font-size: .85rem;
+  padding: .3rem .5rem !important;
+  flex: 0 0 auto;
+  transition: all .15s;
+  border-radius: .375rem;
+  cursor: pointer;
+}
+.sl-del-co-btn:hover {
+  background: var(--sl-dr-bg);
+  border-color: var(--sl-dr);
+  color: var(--sl-dr);
+}
+
+/* ── Migration status badge (Settings page) ── */
+.migration-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .3rem .75rem;
+  border-radius: 9999px;
+  font-size: .75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.migration-badge.ok   { background: #d1fae5; color: #065f46; }
+.migration-badge.err  { background: #fee2e2; color: #991b1b; }
+.migration-badge.warn { background: #fef3c7; color: #92400e; }
+
+/* ── Payment-side filter buttons ── */
+.sl-pay-filter-btn {
+  padding: .35rem .85rem;
+  border: 1px solid var(--slate-200);
+  border-radius: 9999px;
+  font-size: .75rem;
+  font-weight: 600;
+  background: #fff;
+  color: var(--slate-600);
+  cursor: pointer;
+  transition: all .15s;
+}
+.sl-pay-filter-btn:hover { background: var(--slate-50); }
+.sl-pay-filter-btn.active[data-pay=""] {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.sl-pay-filter-btn.active[data-pay="consignor"] {
+  background: var(--blue);
+  color: #fff;
+  border-color: var(--blue);
+}
+.sl-pay-filter-btn.active[data-pay="consignee"] {
+  background: var(--green);
+  color: #fff;
+  border-color: var(--green);
+}

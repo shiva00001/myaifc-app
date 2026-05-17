@@ -1,0 +1,79 @@
+/* ── Table wrapper ───────────────────────────────────── */
+.tbl-wrap { overflow-x: auto; }
+
+table.tbl {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: .78rem;
+}
+
+.tbl th {
+  background: var(--slate-50);
+  padding: .55rem .875rem;
+  text-align: left;
+  font-size: .65rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 1px solid var(--slate-200);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.tbl td {
+  padding: .6rem .875rem;
+  color: var(--slate-700);
+  border-bottom: 1px solid #f8fafc;
+  white-space: nowrap;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tbl tbody tr:hover td    { background: #f8fafc; }
+.tbl tbody tr:last-child td { border-bottom: none; }
+
+/* ── Cell helpers ────────────────────────────────────── */
+.cn-cell      { font-weight: 600; color: var(--blue); }
+.private-cell { font-family: monospace; color: var(--slate-400); letter-spacing: .1em; }
+
+/* ── Badges ──────────────────────────────────────────── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: .2rem .55rem;
+  border-radius: 9999px;
+  font-size: .65rem;
+  font-weight: 600;
+}
+.b-paid    { background: #d1fae5; color: #065f46; }
+.b-pending { background: #fef3c7; color: #92400e; }
+.b-neg     { background: #fee2e2; color: #991b1b; }
+
+/* ── Ledger drawer table ─────────────────────────────── */
+.ledger-drawer-body table { width: 100%; border-collapse: collapse; font-size: .75rem; }
+
+.ledger-drawer-body th {
+  background: var(--slate-50);
+  padding: .5rem .75rem;
+  text-align: left;
+  font-size: .62rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  border-bottom: 1px solid var(--slate-200);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+}
+
+.ledger-drawer-body td { padding: .55rem .75rem; color: var(--slate-700); border-bottom: 1px solid #f8fafc; white-space: nowrap; }
+.ledger-drawer-body tr:hover td { background: #f8fafc; }
+
+.due-badge { display: inline-flex; align-items: center; gap: .3rem; padding: .2rem .55rem; border-radius: 9999px; font-size: .65rem; font-weight: 700; }
+.due-badge.due  { background: #fee2e2; color: #991b1b; }
+.due-badge.paid { background: #d1fae5; color: #065f46; }
+.ld-empty { text-align: center; padding: 3rem 1rem; color: var(--slate-400); font-size: .8rem; }

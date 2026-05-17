@@ -1,0 +1,26 @@
+/* ══ AIFC Transport — Main CSS ═══════════════════════════════════════
+   Import order: abstracts → base → layouts → components → pages
+   Vite handles bundling; @import here is processed at build time.
+════════════════════════════════════════════════════════════════════ */
+
+/* 1. Abstracts */
+@import './abstracts/_variables.css';
+
+/* 2. Base */
+@import './base/_reset.css';
+@import './base/_animations.css';
+
+/* 3. Layouts */
+@import './layouts/_sidebar.css';
+@import './layouts/_header.css';
+
+/* 4. Components */
+@import './components/_buttons.css';
+@import './components/_cards.css';
+@import './components/_tables.css';
+@import './components/_forms.css';
+@import './components/_modals.css';
+
+/* 5. Pages */
+@import './pages/_login.css';
+@import './pages/_ledger.css';

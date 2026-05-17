@@ -1,0 +1,51 @@
+/* ── Base button ─────────────────────────────────────── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .375rem;
+  padding: .5rem .9rem;
+  border-radius: .5rem;
+  font-size: .8rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all .15s;
+  white-space: nowrap;
+}
+.btn svg { width: .9rem; height: .9rem; flex-shrink: 0; }
+
+/* Variants */
+.btn-primary              { background: var(--blue);  color: #fff; }
+.btn-primary:hover        { background: var(--blue-d); }
+.btn-primary:disabled     { background: #93c5fd; cursor: not-allowed; }
+
+.btn-ghost                { background: #fff; color: var(--slate-700); border: 1px solid var(--slate-200); }
+.btn-ghost:hover          { background: var(--slate-50); }
+
+.btn-danger               { background: var(--red);   color: #fff; }
+.btn-danger:hover         { background: #b91c1c; }
+
+.btn-success              { background: var(--green);  color: #fff; }
+.btn-success:hover        { background: #15803d; }
+
+.btn-amber                { background: #f59e0b; color: #fff; }
+.btn-amber:hover          { background: var(--amber); }
+
+/* Row helper */
+.btn-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+  align-items: center;
+}
+
+/* Spinner inside buttons */
+.spin {
+  width: 1.25rem;
+  height: 1.25rem;
+  border: 2px solid #bfdbfe;
+  border-top-color: var(--blue);
+  border-radius: 50%;
+  animation: rot .65s linear infinite;
+  display: inline-block;
+}

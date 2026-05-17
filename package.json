@@ -1,0 +1,25 @@
+{
+  "name": "aifc-transport",
+  "version": "1.0.0",
+  "description": "AIFC Transport Management \u2014 consignment notes, lorry receipts & P&L analytics",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint src --ext .js",
+    "format": "prettier --write src/"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4",
+    "@sentry/browser": "^8.0.0"
+  },
+  "devDependencies": {
+    "vite": "^5.4.8",
+    "prettier": "^3.3.3",
+    "terser": "^5.31.6",
+    "vite-plugin-compression": "^0.5.1",
+    "eslint": "^9.0.0"
+  }
+}

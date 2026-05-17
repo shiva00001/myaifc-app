@@ -1,0 +1,32 @@
+{
+  "env": {
+    "browser": true,
+    "es2022": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2022,
+    "sourceType": "module"
+  },
+  "extends": ["eslint:recommended"],
+  "globals": {
+    "window":                "readonly",
+    "document":              "readonly",
+    "navigator":             "readonly",
+    "localStorage":          "readonly",
+    "performance":           "readonly",
+    "requestAnimationFrame": "readonly",
+    "requestIdleCallback":   "readonly",
+    "indexedDB":             "readonly",
+    "__aifc":                "readonly",
+    "XLSX":                  "readonly",
+    "Chart":                 "readonly",
+    "html2pdf":              "readonly"
+  },
+  "rules": {
+    "no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }],
+    "no-console":     "warn",
+    "eqeqeq":         "error",
+    "no-var":         "error",
+    "prefer-const":   "warn"
+  }
+}

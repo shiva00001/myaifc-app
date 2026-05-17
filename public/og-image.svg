@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <rect x="60" y="60" width="1080" height="510" rx="24" fill="#1e293b"/>
+  <!-- Truck icon -->
+  <g transform="translate(500,180)" fill="none" stroke="#2563eb" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+    <path d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 .001M13 16l2 .001M5 16H3m10 0h4m0 0l2-6H13V5m0 11h2M13 5h4l2 6" transform="scale(8)"/>
+  </g>
+  <!-- App name -->
+  <text x="600" y="380" text-anchor="middle" font-family="Arial,sans-serif" font-size="72" font-weight="bold" fill="#ffffff">AIFC Transport</text>
+  <text x="600" y="450" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" fill="#94a3b8">Management System</text>
+  <text x="600" y="510" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="#475569">Consignment Notes · Lorry Receipts · P&amp;L Analytics</text>
+</svg>

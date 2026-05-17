@@ -1,0 +1,27 @@
+/* ── Design tokens ───────────────────────────────────── */
+:root {
+  --sb: 240px;
+
+  /* Brand */
+  --blue:     #2563eb;
+  --blue-d:   #1d4ed8;
+  --blue-l:   #eff6ff;
+
+  /* Status */
+  --green:    #16a34a;
+  --red:      #dc2626;
+  --amber:    #d97706;
+
+  /* Slate scale */
+  --slate-900: #0f172a;
+  --slate-800: #1e293b;
+  --slate-700: #334155;
+  --slate-600: #475569;
+  --slate-400: #94a3b8;
+  --slate-200: #e2e8f0;
+  --slate-100: #f1f5f9;
+  --slate-50:  #f8fafc;
+
+  /* Radii */
+  --radius: .625rem;
+}

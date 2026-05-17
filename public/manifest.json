@@ -1,0 +1,12 @@
+{
+  "name": "AIFC Transport",
+  "short_name": "AIFC",
+  "description": "Transport management — consignment notes, lorry receipts & P&L analytics",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#2563eb",
+  "icons": [
+    { "src": "/favicon.svg", "type": "image/svg+xml", "sizes": "any" }
+  ]
+}

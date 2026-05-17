@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /
+
+# Private internal application — intentionally not indexed
+# Remove the Disallow line above if you want the login page indexed
+
+Sitemap: https://aifcmanagement.netlify.app/sitemap.xml

@@ -1,0 +1,127 @@
+/* ── Base card ───────────────────────────────────────── */
+.card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+}
+
+/* ── Stat cards (dashboard) ──────────────────────────── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .875rem;
+  margin-bottom: 1.25rem;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  transition: box-shadow .15s;
+}
+
+.stat-card.clickable { cursor: pointer; }
+.stat-card.clickable:hover { box-shadow: 0 4px 16px rgba(0,0,0,.08); }
+
+.stat-label {
+  font-size: .68rem;
+  font-weight: 600;
+  color: var(--slate-400);
+  text-transform: uppercase;
+  letter-spacing: .07em;
+  margin-bottom: .35rem;
+}
+
+.stat-val {
+  font-size: 1.7rem;
+  font-weight: 700;
+  line-height: 1.1;
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+
+.lock-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: .15rem;
+  border-radius: .25rem;
+  color: var(--slate-400);
+  transition: color .15s;
+}
+.lock-btn:hover { color: var(--slate-600); }
+.lock-btn svg { width: .85rem; height: .85rem; display: block; }
+
+/* ── Party ledger cards ──────────────────────────────── */
+.ledger-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: .875rem;
+  margin-bottom: 1.25rem;
+}
+
+.party-card {
+  background: #fff;
+  border: 1px solid var(--slate-200);
+  border-radius: var(--radius);
+  padding: 1rem 1.1rem;
+  cursor: pointer;
+  transition: box-shadow .15s, border-color .15s;
+  position: relative;
+  overflow: hidden;
+}
+.party-card:hover          { box-shadow: 0 4px 18px rgba(0,0,0,.09); border-color: var(--slate-300); }
+.party-card.has-due        { border-left: 3px solid var(--red); }
+.party-card.all-paid       { border-left: 3px solid var(--green); }
+
+.party-card-name   { font-size: .8125rem; font-weight: 700; color: var(--slate-800); margin-bottom: .25rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.party-card-role   { font-size: .65rem; font-weight: 600; color: var(--slate-400); text-transform: uppercase; letter-spacing: .06em; margin-bottom: .75rem; }
+.party-card-row    { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
+.party-card-label  { font-size: .7rem; color: var(--slate-500); }
+.party-card-val    { font-size: .75rem; font-weight: 600; color: var(--slate-700); }
+.party-card-val.red   { color: var(--red); }
+.party-card-val.green { color: var(--green); }
+.party-card-trips  { position: absolute; top: .75rem; right: .875rem; font-size: .65rem; font-weight: 700; color: rgba(37,99,235,.7); background: var(--blue-l); padding: .15rem .5rem; border-radius: 9999px; }
+
+/* ── Chart cards (reports) ───────────────────────────── */
+.report-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.chart-card {
+  padding: 1.25rem;
+  min-height: 340px;
+  display: flex;
+  flex-direction: column;
+}
+.chart-card h3 { font-size: .85rem; font-weight: 600; color: var(--slate-700); margin-bottom: 1rem; }
+.chart-area   { flex: 1; position: relative; min-height: 280px; }
+
+.export-card { padding: 1.25rem; }
+.export-card h3 { font-size: .85rem; font-weight: 600; color: var(--slate-700); margin-bottom: .875rem; }
+.export-fields  { display: flex; flex-direction: column; gap: .625rem; }
+
+.preview-count {
+  padding: .5rem .75rem;
+  background: var(--slate-50);
+  border: 1px solid var(--slate-200);
+  border-radius: .375rem;
+  font-size: .78rem;
+  color: var(--slate-600);
+  text-align: center;
+  margin-top: .375rem;
+}
+
+@media (max-width: 768px) {
+  .report-grid { grid-template-columns: 1fr; }
+  .stats-grid  { grid-template-columns: 1fr 1fr; }
+}
+@media (max-width: 480px) {
+  .stats-grid  { grid-template-columns: 1fr; }
+  .ledger-grid { grid-template-columns: 1fr 1fr; }
+}

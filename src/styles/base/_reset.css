@@ -1,0 +1,24 @@
+/* ── Box-model reset ─────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/*
+  PERFORMANCE FIX: Removed Google Fonts @import (was render-blocking).
+  Inter is loaded via preload link in <head> with font-display:swap.
+  System-ui is the instant fallback — visually identical on most devices.
+*/
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont,
+               'Segoe UI', Roboto, sans-serif;
+  background: var(--slate-100);
+  color: var(--slate-800);
+  min-height: 100vh;
+  overflow-y: scroll; /* prevent layout shift from scrollbar */
+}
+
+.hidden { display: none !important; }

@@ -1,0 +1,1118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="AIFC Transport Management — consignment notes, lorry receipts, P&L analytics">
+
+  <!-- Open Graph (link previews in WhatsApp, Slack, LinkedIn) -->
+  <meta property="og:type"        content="website">
+  <meta property="og:url"         content="https://aifcmanagement.netlify.app/">
+  <meta property="og:title"       content="AIFC — Transport Management">
+  <meta property="og:description" content="AIFC Transport Management — consignment notes, lorry receipts, P&amp;L analytics">
+  <meta property="og:image"       content="https://aifcmanagement.netlify.app/og-image.png">
+
+  <!-- Twitter / X Card -->
+  <meta name="twitter:card"        content="summary">
+  <meta name="twitter:title"       content="AIFC — Transport Management">
+  <meta name="twitter:description" content="Consignment notes, lorry receipts &amp; P&amp;L analytics">
+
+  <!-- Canonical URL -->
+  <link rel="canonical" href="https://aifcmanagement.netlify.app/">
+  <title>AIFC — Transport Management</title>
+
+  <!-- Favicon + PWA -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="manifest" href="/manifest.json">
+
+  <!-- Resource hints -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://supabase.co">
+  <!-- Inter font: preloaded with font-display:swap — no FOIT, no render block -->
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    crossorigin>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+    crossorigin media="print" onload="this.media='all'">
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+  </noscript>
+
+  <!-- ── CRITICAL CSS inlined — paints sidebar + dashboard shell with ZERO render blocking ── -->
+  <style>
+    /* ── Reset + tokens ── */
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --sb:240px;--blue:#2563eb;--blue-d:#1d4ed8;--blue-l:#eff6ff;
+      --green:#16a34a;--red:#dc2626;--amber:#d97706;
+      --slate-900:#0f172a;--slate-800:#1e293b;--slate-700:#334155;
+      --slate-600:#475569;--slate-400:#94a3b8;--slate-200:#e2e8f0;
+      --slate-100:#f1f5f9;--slate-50:#f8fafc;--radius:.625rem;
+    }
+    body{font-family:system-ui,sans-serif;background:var(--slate-100);color:var(--slate-800);min-height:100vh}
+    .hidden{display:none!important}
+    /* ── Accessibility: skip link ── */
+    .skip-link{position:absolute;top:-40px;left:0;background:var(--blue);color:#fff;
+      padding:.5rem 1rem;border-radius:0 0 .5rem 0;z-index:10000;font-size:.8rem;
+      font-weight:600;text-decoration:none;transition:top .15s}
+    .skip-link:focus{top:0}
+    /* ── Visible focus indicators for all interactive elements ── */
+    .btn:focus-visible,.nav-item:focus-visible,.fi:focus-visible,
+    .fi-sm:focus-visible,.lp-input:focus-visible{
+      outline:2px solid var(--blue);outline-offset:2px}
+    /* ── Screen-reader only utility ── */
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;
+      overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+    /* ── Sidebar shell ── */
+    .sidebar{position:fixed;top:0;left:0;height:100vh;width:var(--sb);background:var(--slate-900);display:flex;flex-direction:column;z-index:100;transition:transform .25s ease}
+    .sb-logo{display:flex;align-items:center;gap:.75rem;padding:1.25rem 1rem;border-bottom:1px solid rgba(255,255,255,.07)}
+    .sb-icon{width:2rem;height:2rem;background:var(--blue);border-radius:.5rem;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+    .sb-icon svg{width:1.1rem;height:1.1rem;color:#fff}
+    .sb-brand{color:#fff;font-weight:700;font-size:1.1rem;letter-spacing:-.3px}
+    .sb-close{margin-left:auto;background:none;border:none;color:rgba(255,255,255,.4);font-size:1.25rem;cursor:pointer;display:none;line-height:1}
+    .sb-nav{flex:1;overflow-y:auto;padding:.75rem 0}
+    .sb-section{font-size:.6rem;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.3);text-transform:uppercase;padding:.75rem 1rem .3rem}
+    .nav-item{display:flex;align-items:center;gap:.75rem;padding:.6rem 1rem;margin:.1rem .5rem;border-radius:.5rem;color:rgba(255,255,255,.6);font-size:.8125rem;font-weight:500;cursor:pointer;transition:all .15s;border:none;background:none;width:calc(100% - 1rem);text-align:left}
+    .nav-item:hover{background:rgba(255,255,255,.06);color:#fff}
+    .nav-item.active{background:rgba(37,99,235,.25);color:#93c5fd}
+    .nav-item svg{width:1rem;height:1rem;flex-shrink:0;opacity:.7}
+    .nav-item.active svg{opacity:1;color:#60a5fa}
+    .sb-footer{padding:.75rem 1rem;border-top:1px solid rgba(255,255,255,.07)}
+    .sb-status{font-size:.68rem;color:rgba(255,255,255,.3);display:flex;align-items:center;gap:.4rem}
+    .sb-dot{width:.45rem;height:.45rem;border-radius:50%;background:#22c55e;flex-shrink:0}
+    .sb-dot.err{background:#ef4444}.sb-dot.warn{background:#f59e0b}
+
+    /* ── Main layout ── */
+    .main-wrap{margin-left:var(--sb);min-height:100vh;display:flex;flex-direction:column}
+    .mob-header{display:none;align-items:center;gap:.75rem;padding:.75rem 1rem;background:#fff;border-bottom:1px solid var(--slate-200);position:sticky;top:0;z-index:50}
+    .mob-title{font-weight:700;font-size:1rem;color:var(--slate-800)}
+    .hamburger{background:none;border:none;cursor:pointer;padding:.25rem;border-radius:.375rem;color:var(--slate-700)}
+    .hamburger svg{width:1.25rem;height:1.25rem;display:block}
+    .page-content{padding:1.5rem;flex:1}
+    .page-content.hidden{display:none}
+    .page-header{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:.75rem;margin-bottom:1.5rem}
+    .page-title{font-size:1.4rem;font-weight:700;color:var(--slate-800)}
+
+    /* ── Stat cards (above-fold on dashboard = LCP element) ── */
+    .stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.875rem;margin-bottom:1.25rem}
+    .stat-card{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius);padding:1.1rem 1.25rem}
+    .stat-label{font-size:.68rem;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem}
+    .stat-val{font-size:1.7rem;font-weight:700;line-height:1.1;display:flex;align-items:center;gap:.5rem}
+    .stat-card.clickable{cursor:pointer}
+    .stat-card.clickable:hover{box-shadow:0 4px 16px rgba(0,0,0,.08)}
+
+    /* ── Buttons (needed for "New LR" above fold) ── */
+    .btn{display:inline-flex;align-items:center;gap:.375rem;padding:.5rem .9rem;border-radius:.5rem;font-size:.8rem;font-weight:500;cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+    .btn-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
+    .btn-primary{background:var(--blue);color:#fff}.btn-primary:hover{background:var(--blue-d)}
+    .btn-ghost{background:#fff;color:var(--slate-700);border:1px solid var(--slate-200)}.btn-ghost:hover{background:var(--slate-50)}
+    .chip{display:inline-flex;align-items:center;gap:.375rem;padding:.25rem .625rem;background:var(--blue-l);color:var(--blue);border-radius:9999px;font-size:.7rem;font-weight:600}
+
+    /* ── Card ── */
+    .card{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius)}
+    .filter-bar{background:#fff;border:1px solid var(--slate-200);border-radius:var(--radius);padding:.875rem 1rem;display:flex;flex-wrap:wrap;gap:.625rem;align-items:center;margin-bottom:1rem}
+    .filter-bar label{font-size:.7rem;font-weight:600;color:var(--slate-600);white-space:nowrap}
+    .fi-sm{padding:.4rem .625rem;font-size:.78rem;border:1px solid var(--slate-200);border-radius:.4rem;background:#fff;color:var(--slate-700)}
+
+    /* ── Table skeleton ── */
+    .tbl-wrap{overflow-x:auto}
+    table.tbl{width:100%;border-collapse:collapse;font-size:.78rem}
+    .tbl th{background:var(--slate-50);padding:.55rem .875rem;text-align:left;font-size:.65rem;font-weight:600;color:var(--slate-400);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--slate-200);white-space:nowrap;position:sticky;top:0}
+    .tbl td{padding:.6rem .875rem;color:var(--slate-700);border-bottom:1px solid #f8fafc;white-space:nowrap;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+    .tbl tbody tr:hover td{background:#f8fafc}
+    .badge{display:inline-flex;align-items:center;padding:.2rem .55rem;border-radius:9999px;font-size:.65rem;font-weight:600}
+    .b-paid{background:#d1fae5;color:#065f46}.b-pending{background:#fef3c7;color:#92400e}
+    .cn-cell{font-weight:600;color:var(--blue)}
+    .lock-btn{background:none;border:none;cursor:pointer;padding:.15rem;border-radius:.25rem;color:var(--slate-400);transition:color .15s}
+    .lock-btn svg{width:.85rem;height:.85rem;display:block}
+
+    /* ── Toast ── */
+    #toasts{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;display:flex;flex-direction:column;gap:.4rem;pointer-events:none}
+    .toast{padding:.6rem 1rem;border-radius:.5rem;font-size:.78rem;font-weight:500;color:#fff;max-width:320px;pointer-events:none}
+    .t-ok{background:#16a34a}.t-err{background:#dc2626}.t-info{background:#2563eb}
+
+    /* ── Spinner ── */
+    @keyframes rot{to{transform:rotate(360deg)}}
+    .spin{width:1.25rem;height:1.25rem;border:2px solid #bfdbfe;border-top-color:var(--blue);border-radius:50%;animation:rot .65s linear infinite;display:inline-block}
+
+    /* ── Mob overlay ── */
+    .mob-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99;display:none}
+    .mob-overlay.open{display:block}
+
+    /* ── User row in sidebar ── */
+    .sb-user{display:flex;align-items:center;gap:.625rem;padding:.75rem 1rem .5rem;border-bottom:1px solid rgba(255,255,255,.07);margin-bottom:.25rem}
+    .sb-avatar{width:2rem;height:2rem;border-radius:50%;background:linear-gradient(135deg,#2563eb,#7c3aed);display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700;color:#fff;flex-shrink:0}
+    .sb-logout{background:none;border:none;cursor:pointer;color:rgba(255,255,255,.3);padding:.25rem;border-radius:.3rem;transition:color .15s;flex-shrink:0}
+    .sb-logout:hover{color:#f87171}
+    .sb-logout svg{width:.875rem;height:.875rem;display:block}
+
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      .sidebar{transform:translateX(-100%)}.sidebar.open{transform:translateX(0)}
+      .sb-close{display:block}.main-wrap{margin-left:0}.mob-header{display:flex}
+    }
+    @media(max-width:480px){.page-content{padding:1rem}.stats-grid{grid-template-columns:1fr}}
+
+    /* ── content-visibility on off-screen pages → skip layout/paint ── */
+    .page-content.hidden{content-visibility:hidden}
+  </style>
+  <!-- Non-critical CSS loaded async after paint — eliminates render-blocking -->
+  <link rel="preload" href="/js/main.js" as="script" crossorigin>
+  <!-- Structured data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "AIFC Transport Management",
+    "description": "Transport management — consignment notes, lorry receipts & P&L analytics",
+    "url": "https://aifcmanagement.netlify.app/",
+    "applicationCategory": "BusinessApplication",
+    "operatingSystem": "Any"
+  }
+  </script>
+</head>
+<body>
+
+<!-- Skip to main content (accessibility) -->
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<!-- ═══════════════ LOGIN SCREEN ═══════════════ -->
+<div id="login-screen" class="hidden">
+
+  <!-- Left decorative panel -->
+  <div class="lp-left">
+    <div class="lp-grid"></div>
+    <div class="lp-orb lp-orb-1"></div>
+    <div class="lp-orb lp-orb-2"></div>
+    <div class="lp-orb lp-orb-3"></div>
+    <div class="lp-truck">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width=".8"
+          d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width=".8"
+          d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 .001M13 16l2 .001M5 16H3m10 0h4m0 0l2-6H13V5m0 11h2M13 5h4l2 6"/>
+      </svg>
+    </div>
+    <div class="lp-chips">
+      <div class="lp-chip"><span class="lp-chip-dot"></span>Real-time Supabase sync</div>
+      <div class="lp-chip"><span class="lp-chip-dot"></span>Offline-ready with local cache</div>
+      <div class="lp-chip"><span class="lp-chip-dot"></span>P&amp;L analytics &amp; Excel export</div>
+    </div>
+    <div class="lp-headline">
+      <h2>Manage your<br><span>freight business</span><br>with confidence.</h2>
+      <p>AIFC Transport Management — consignment notes, lorry receipts, and income tracking in one place.</p>
+    </div>
+  </div>
+
+  <!-- Right sign-in panel -->
+  <div class="lp-right">
+    <div class="lp-form-wrap">
+
+      <div class="lp-logo-row">
+        <div class="lp-logo-icon">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+          </svg>
+        </div>
+        <div>
+          <span class="lp-logo-text">AIFC</span>
+          <span class="lp-logo-badge">TRANSPORT</span>
+        </div>
+      </div>
+
+      <div style="margin-bottom:1.75rem">
+        <p style="font-size:1.5rem;font-weight:800;color:#fff;line-height:1.2;margin-bottom:.35rem">Welcome back</p>
+        <p style="font-size:.8rem;color:rgba(255,255,255,.4)">Sign in to your AIFC account to continue</p>
+      </div>
+
+      <!-- Sign In form -->
+      <div id="lp-auth-panel">
+        <div class="lp-field">
+          <label class="lp-label">Email address</label>
+          <div class="lp-input-wrap">
+            <span class="lp-input-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <input type="email" id="lp-si-email" class="lp-input" placeholder="you@example.com" autocomplete="email"
+              autocomplete="email" onkeydown="if(event.key==='Enter')document.getElementById('lp-si-pass').focus()">
+          </div>
+        </div>
+        <div class="lp-field">
+          <label class="lp-label">Password</label>
+          <div class="lp-input-wrap">
+            <span class="lp-input-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+            </span>
+            <input type="password" id="lp-si-pass" class="lp-input" placeholder="••••••••"
+              autocomplete="current-password" onkeydown="if(event.key==='Enter')window.__aifc.lpSignIn()">
+            <button class="lp-eye" onclick="window.__aifc.lpToggleEye('lp-si-pass')" type="button" tabindex="-1">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="lp-forgot">
+          <button class="lp-link" onclick="window.__aifc.lpShowForgot()">Forgot password?</button>
+        </div>
+        <div class="lp-err-msg" id="lp-si-err"></div>
+        <button class="lp-submit" id="lp-si-btn" onclick="window.__aifc.lpSignIn()">
+          <span id="lp-si-label">Sign In</span>
+          <span id="lp-si-spin" style="display:none;position:absolute;right:1.1rem;top:50%;transform:translateY(-50%)">
+            <svg style="width:1.1rem;height:1.1rem;animation:rot .7s linear infinite" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 2v4m0 12v4M4.93 4.93l2.83 2.83m8.48 8.48l2.83 2.83M2 12h4m12 0h4M4.93 19.07l2.83-2.83m8.48-8.48l2.83-2.83" opacity=".4"/>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 2v4" stroke="white"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+
+      <!-- Forgot Password panel -->
+      <div id="lp-forgot-panel" style="display:none">
+        <div style="margin-bottom:1.5rem">
+          <button class="lp-link" onclick="window.__aifc.lpHideForgot()" style="display:inline-flex;align-items:center;gap:.3rem;margin-bottom:1rem">
+            <svg style="width:.8rem;height:.8rem" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            Back to Sign In
+          </button>
+          <p style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:.3rem">Reset your password</p>
+          <p style="font-size:.78rem;color:rgba(255,255,255,.45)">We'll send a reset link to your email.</p>
+        </div>
+        <div class="lp-field">
+          <label class="lp-label">Email address</label>
+          <div class="lp-input-wrap">
+            <span class="lp-input-icon">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+            </span>
+            <input type="email" id="lp-fp-email" class="lp-input" placeholder="you@example.com"
+              onkeydown="if(event.key==='Enter')window.__aifc.lpForgotPassword()">
+          </div>
+        </div>
+        <div class="lp-err-msg" id="lp-fp-err"></div>
+        <button class="lp-submit" id="lp-fp-btn" onclick="window.__aifc.lpForgotPassword()">
+          <span id="lp-fp-label">Send Reset Link</span>
+        </button>
+        <div id="lp-fp-success" style="display:none" class="lp-success-box">
+          <div class="lp-success-icon">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </div>
+          <p style="color:#4ade80;font-weight:700;margin-bottom:.35rem">Email sent!</p>
+          <p style="color:rgba(255,255,255,.45);font-size:.78rem">Check your inbox for the reset link.</p>
+        </div>
+      </div>
+
+      <!-- Set New Password panel -->
+      <div id="lp-newpass-panel" style="display:none">
+        <div style="margin-bottom:1.75rem">
+          <p style="font-size:1rem;font-weight:700;color:#fff;margin-bottom:.3rem">Set New Password</p>
+          <p style="font-size:.78rem;color:rgba(255,255,255,.45)">Choose a strong password for your account.</p>
+        </div>
+        <div class="lp-field">
+          <label class="lp-label">New Password</label>
+          <div class="lp-input-wrap">
+            <span class="lp-input-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></span>
+            <input type="password" id="lp-np-pass" class="lp-input" placeholder="Min 8 characters">
+          </div>
+        </div>
+        <div id="lp-np-strength" style="display:none;margin-bottom:.75rem">
+          <div style="display:flex;gap:4px;margin-bottom:.2rem">
+            <div id="lp-str-1" style="height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.12);transition:background .2s"></div>
+            <div id="lp-str-2" style="height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.12);transition:background .2s"></div>
+            <div id="lp-str-3" style="height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.12);transition:background .2s"></div>
+            <div id="lp-str-4" style="height:4px;flex:1;border-radius:2px;background:rgba(255,255,255,.12);transition:background .2s"></div>
+          </div>
+          <span id="lp-str-label" style="font-size:.65rem;color:rgba(255,255,255,.4)"></span>
+        </div>
+        <div class="lp-field">
+          <label class="lp-label">Confirm Password</label>
+          <div class="lp-input-wrap">
+            <span class="lp-input-icon"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg></span>
+            <input type="password" id="lp-np-confirm" class="lp-input" placeholder="Repeat password"
+              onkeydown="if(event.key==='Enter')window.__aifc.lpSetNewPassword()">
+          </div>
+        </div>
+        <div class="lp-err-msg" id="lp-np-err"></div>
+        <button class="lp-submit" id="lp-np-btn" onclick="window.__aifc.lpSetNewPassword()">
+          <span id="lp-np-label">Set New Password</span>
+          <span id="lp-np-spin" style="display:none;position:absolute;right:1.1rem;top:50%;transform:translateY(-50%)">
+            <svg style="width:1.1rem;height:1.1rem;animation:rot .7s linear infinite" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke-width="2" opacity=".25"/><path stroke-linecap="round" stroke-width="2.5" d="M12 2a10 10 0 010 20" stroke="white"/></svg>
+          </span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div><!-- /login-screen -->
+
+<!-- ═══════════════ APP SHELL ═══════════════ -->
+<div id="mob-overlay" class="mob-overlay" onclick="window.__aifc.closeSidebar()"></div>
+
+<!-- ── SIDEBAR ── -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="sb-icon">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/>
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10l2 .001M13 16l2 .001M5 16H3m10 0h4m0 0l2-6H13V5m0 11h2M13 5h4l2 6"/>
+      </svg>
+    </div>
+    <span class="sb-brand">AIFC Transport</span>
+    <button class="sb-close" onclick="window.__aifc.closeSidebar()" aria-label="Close navigation menu">✕</button>
+  </div>
+
+  <!-- User row (shown after sign-in) -->
+  <div id="sb-user-row" class="sb-user" style="display:none">
+    <div class="sb-avatar"><span id="sb-avatar-initials">?</span></div>
+    <div class="sb-user-info">
+      <div class="sb-user-email" id="sb-user-email"></div>
+      <div class="sb-user-role">Transport Manager</div>
+    </div>
+    <button class="sb-logout" onclick="window.__aifc.lpSignOut()" aria-label="Sign out">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+    </button>
+  </div>
+
+  <nav class="sb-nav" role="navigation" aria-label="Main navigation">
+    <div class="sb-section">Main</div>
+    <button class="nav-item active" data-page="dashboard" aria-current="page">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Dashboard
+    </button>
+    <button class="nav-item" data-page="receipts">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Lorry Receipts
+    </button>
+    <button class="nav-item" data-page="create">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      Create LR
+    </button>
+    <div class="sb-section">Analytics</div>
+    <button class="nav-item" data-page="reports">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+      Reports &amp; P&amp;L
+    </button>
+    <button class="nav-item" data-page="ledger">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Smart Ledger
+    </button>
+    <div class="sb-section">System</div>
+    <button class="nav-item" data-page="settings">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </button>
+  </nav>
+
+  <div class="sb-footer">
+    <div class="sb-status"><span class="sb-dot warn" id="db-dot"></span><span id="db-status-txt" aria-live="polite">Loading…</span></div>
+    <div style="margin-top:.5rem;display:flex;gap:.75rem">
+      <a href="/privacy.html" target="_blank" rel="noopener"
+         style="font-size:.6rem;color:rgba(255,255,255,.25);text-decoration:none">Privacy</a>
+      <a href="/terms.html" target="_blank" rel="noopener"
+         style="font-size:.6rem;color:rgba(255,255,255,.25);text-decoration:none">Terms</a>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════ MAIN ═══════ -->
+<div class="main-wrap" id="main-content">
+
+  <header class="mob-header">
+    <button class="hamburger" onclick="window.__aifc.openSidebar()" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <span class="mob-title" id="mob-page-title">Dashboard</span>
+  </header>
+
+  <!-- ── DASHBOARD ── -->
+  <div class="page-content" id="pg-dashboard">
+    <div class="page-header">
+      <h1 class="page-title">Dashboard</h1>
+      <div class="btn-row">
+        <span id="dash-period" class="chip">Loading…</span>
+        <button class="btn btn-ghost" onclick="window.__aifc.navigate('create')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          New LR
+        </button>
+      </div>
+    </div>
+    <div class="filter-bar" style="margin-bottom:1rem">
+      <label>Month</label><select class="fi-sm" id="d-month" aria-label="Select month"></select>
+      <label>Year</label><select class="fi-sm" id="d-year" aria-label="Select year"></select>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Total Bookings</div><div class="stat-val" style="color:var(--blue)" id="s-total">0</div></div>
+      <div class="stat-card clickable" onclick="window.__aifc.navigateMonthly()"><div class="stat-label">Monthly Bookings ↗</div><div class="stat-val" style="color:var(--blue)" id="s-monthly">0</div></div>
+      <div class="stat-card">
+        <div class="stat-label">Monthly Income
+          <button class="lock-btn" onclick="window.__aifc.togglePrivacy()" aria-label="Toggle privacy lock" aria-pressed="true">
+            <svg id="lock-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </button>
+        </div>
+        <div class="stat-val" style="color:var(--green)" id="s-income">₹0</div>
+      </div>
+      <div class="stat-card clickable" onclick="window.__aifc.navigatePending()">
+        <div class="stat-label">Pending Balance ↗
+          <button class="lock-btn" onclick="window.__aifc.togglePrivacy()" aria-label="Toggle privacy lock" aria-pressed="true">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+          </button>
+        </div>
+        <div class="stat-val" style="color:var(--red)" id="s-pending">₹0</div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="padding:.875rem 1rem;border-bottom:1px solid var(--slate-100);display:flex;justify-content:space-between;align-items:center">
+        <span style="font-size:.8rem;font-weight:600;color:var(--slate-600)">Recent Entries</span>
+        <button class="btn btn-ghost" style="padding:.3rem .7rem;font-size:.72rem" onclick="window.__aifc.navigate('receipts')">View All →</button>
+      </div>
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr><th>CN No.</th><th>Date</th><th>Consignor</th><th>Consignee</th><th>Truck</th><th>TBB</th><th>Status</th></tr></thead>
+          <tbody id="dash-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── LORRY RECEIPTS ── -->
+  <div class="page-content hidden" id="pg-receipts">
+    <div class="page-header">
+      <h1 class="page-title">Lorry Receipts</h1>
+      <div class="btn-row">
+        <label for="imp-file" class="btn btn-ghost" style="cursor:pointer" aria-label="Import CSV or Excel file">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+          Import
+        </label>
+        <input type="file" id="imp-file" accept=".csv,.xlsx,.xls" style="display:none">
+        <button class="btn btn-ghost" onclick="window.__aifc.exportAll()" aria-label="Export all receipts to Excel">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export All
+        </button>
+        <button class="btn btn-primary" onclick="window.__aifc.navigate('create')">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+          New LR
+        </button>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <label>Month</label><select class="fi-sm" id="r-month" aria-label="Filter by month"><option value="">All</option></select>
+      <label>Year</label><select class="fi-sm" id="r-year" aria-label="Filter by year"></select>
+      <label>Status</label>
+      <select class="fi-sm" id="r-status" aria-label="Filter by status">
+        <option value="">All</option><option value="pending">Pending</option><option value="paid">Paid</option>
+      </select>
+      <div class="search-wrap">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" class="fi" id="r-search" placeholder="Search CN, consignor, consignee, truck…" aria-label="Search receipts">
+      </div>
+      <span id="r-chip" style="display:none"></span>
+    </div>
+    <div class="card">
+      <div class="tbl-wrap">
+        <table class="tbl">
+          <thead><tr>
+            <th>CN No.</th><th>CN Date</th><th>Wt.</th><th>Pkgs</th>
+            <th>Consignor</th><th>Consignee</th><th>Destination</th><th>Truck No.</th>
+            <th>To Pay</th><th>TBB</th><th>Challan No.</th><th>Challan Date</th>
+            <th>Lorry Hire</th><th>Advance</th><th>Balance</th>
+            <th>Bill No/Date</th><th>MR No.</th><th>Pay Side</th><th>Status</th><th>Actions</th>
+          </tr></thead>
+          <tbody id="rec-tbody"></tbody>
+        </table>
+      </div>
+      <div id="rec-footer" style="padding:.6rem 1rem;border-top:1px solid var(--slate-100);font-size:.72rem;color:var(--slate-400)"></div>
+      <div id="rec-total-bar" style="display:none;padding:.6rem 1.25rem;border-top:1px solid var(--slate-100);gap:1.25rem;flex-wrap:wrap;align-items:center;background:var(--slate-50)"></div>
+    </div>
+  </div>
+
+  <!-- ── CREATE / EDIT LR ── -->
+  <div class="page-content hidden" id="pg-create">
+    <div class="page-header">
+      <h1 class="page-title" id="form-title">Create LR</h1>
+      <button class="btn btn-ghost" onclick="window.__aifc.navigate('receipts')">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        Back
+      </button>
+    </div>
+    <div class="card" style="padding:1.5rem">
+      <form id="entry-form" novalidate>
+        <input type="hidden" id="f-id">
+        <div class="form-grid">
+          <div class="form-group"><label class="form-label">CN No. <span class="req">*</span></label><input type="text" id="f-cnNo" class="fi" placeholder="e.g. CN-2401" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">CN Date <span class="req">*</span></label><input type="date" id="f-cnDate" class="fi"></div>
+          <div class="form-group"><label class="form-label">Weight (kg)</label><input type="number" step="any" min="0" id="f-weight" class="fi" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">No. of Packages</label><input type="text" id="f-noOfPackages" class="fi" placeholder="e.g. 10 bags"></div>
+          <div class="form-group"><label class="form-label">Consignor's Name <span class="req">*</span></label><input type="text" id="f-consignor" class="fi" placeholder="Sender name" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">Consignee's Name <span class="req">*</span></label><input type="text" id="f-consignee" class="fi" placeholder="Receiver name" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">Destination</label><input type="text" id="f-destination" class="fi" placeholder="City / Address"></div>
+          <div class="form-group"><label class="form-label">Truck No.</label><input type="text" id="f-truckNo" class="fi" placeholder="TS09AB1234" style="text-transform:uppercase" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">To Pay (₹)</label><input type="number" step="any" min="0" id="f-toPay" class="fi" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">TBB (₹)</label><input type="number" step="any" min="0" id="f-tbb" class="fi" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">Challan No.</label><input type="text" id="f-challanNo" class="fi" placeholder="Challan number"></div>
+          <div class="form-group"><label class="form-label">Challan Date</label><input type="date" id="f-challanDate" class="fi"></div>
+          <div class="form-group"><label class="form-label">Lorry Hire (₹)</label><input type="number" step="any" min="0" id="f-lorryHire" class="fi" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">Advance (₹)</label><input type="number" step="any" min="0" id="f-advance" class="fi" placeholder="0.00"></div>
+          <div class="form-group"><label class="form-label">Balance (₹) <span style="font-size:.65rem;color:var(--slate-400);font-weight:400;text-transform:none">(auto-calculated)</span></label><input type="number" id="f-balance" class="fi" readonly tabindex="-1"></div>
+          <div class="form-group"><label class="form-label">Bill No / Date</label><input type="text" id="f-billNoDate" class="fi" placeholder="e.g. B-001 / 01-04-2026"></div>
+          <div class="form-group"><label class="form-label">MR No. <span style="font-size:.65rem;color:var(--slate-400);font-weight:400;text-transform:none">(fill = paid)</span></label><input type="text" id="f-mrNo" class="fi" placeholder="Money receipt no."></div>
+          <div class="form-group" style="grid-column:1/-1;border:2px solid var(--blue);border-radius:var(--radius);padding:.875rem 1rem;background:var(--blue-l)">
+            <label class="form-label" style="color:var(--blue)">Payment Side <span class="req">*</span>
+              <span style="font-weight:400;font-size:.65rem;text-transform:none;color:var(--slate-600)"> — Who pays the freight?</span>
+            </label>
+            <select id="f-paymentSide" class="fi" style="font-weight:600;border-color:var(--blue)">
+              <option value="">— Select Payment Side —</option>
+              <option value="consignor">Consignor (Sender pays freight)</option>
+              <option value="consignee">Consignee (Receiver pays freight)</option>
+            </select>
+            <p style="font-size:.7rem;color:var(--slate-600);margin-top:.4rem">
+              💡 This controls which party's ledger gets the freight debit entry.
+              Only ONE party will be debited — no duplicate entries.
+            </p>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--slate-100);flex-wrap:wrap;gap:.75rem">
+          <p id="form-err" style="font-size:.78rem;color:var(--red);display:none"></p>
+          <div style="display:flex;gap:.5rem;margin-left:auto">
+            <button type="button" id="btn-save-next" class="btn btn-ghost">Save &amp; New</button>
+            <button type="button" id="btn-save-back" class="btn btn-primary">Save &amp; Back</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── REPORTS ── -->
+  <div class="page-content hidden" id="pg-reports">
+    <div class="page-header">
+      <h1 class="page-title">Reports &amp; P&amp;L</h1>
+      <div class="btn-row">
+        <label>Chart Year</label>
+        <select class="fi-sm" id="chart-year" style="width:90px"></select>
+      </div>
+    </div>
+    <div class="report-grid">
+      <div class="card chart-card" style="grid-column:1/-1">
+        <h3>Profit &amp; Loss — Monthly Overview</h3>
+        <div class="chart-area"><canvas id="pl-chart"></canvas></div>
+      </div>
+    </div>
+    <div class="card export-card">
+      <h3>📤 Filtered Export to Excel</h3>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:.75rem;margin-bottom:.75rem">
+        <div class="form-group"><label class="form-label">Company (Consignor or Consignee)</label><input type="text" id="ex-company" class="fi" placeholder="Type company name…" oninput="window.__aifc.updateExportPreview()"></div>
+        <div class="form-group"><label class="form-label">Month</label><select id="ex-month" class="fi-sm" onchange="window.__aifc.updateExportPreview()"><option value="">All Months</option></select></div>
+        <div class="form-group"><label class="form-label">Year</label><select id="ex-year" class="fi-sm" onchange="window.__aifc.updateExportPreview()"></select></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select id="ex-status" class="fi-sm" onchange="window.__aifc.updateExportPreview()">
+            <option value="">All</option><option value="pending">Pending Only</option><option value="paid">Paid Only</option>
+          </select>
+        </div>
+      </div>
+      <div id="ex-preview" class="preview-count">Matching entries: —</div>
+      <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap">
+        <button class="btn btn-success" onclick="window.__aifc.exportFiltered()">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export Filtered Data
+        </button>
+        <button class="btn btn-ghost" onclick="window.__aifc.clearExportFilters()">Clear Filters</button>
+      </div>
+    </div>
+    <div style="margin-top:1rem"><div class="stats-grid" id="report-stats" style="display:none"></div></div>
+  </div>
+
+  <!-- ══ SMART LEDGER SYSTEM ══════════════════════════════════════ -->
+  <div class="page-content hidden" id="pg-ledger">
+
+    <!-- ── LIST VIEW (default) ── -->
+    <div id="sl-view-list">
+      <div class="page-header">
+        <h1 class="page-title">Smart Ledger</h1>
+        <div class="btn-row">
+          <button class="btn btn-ghost" onclick="window.__aifc.slOpenAddCompany()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-2 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+            Add Company
+          </button>
+          <button class="btn btn-ghost" onclick="window.__aifc.slAddEntry()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Entry
+          </button>
+          <button class="btn btn-ghost" onclick="window.__aifc.slExportExcel()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+            Export Excel
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="sl-stats">
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Companies</div>
+          <div class="sl-stat-val" id="sl-stat-parties">0</div>
+        </div>
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Total Receivable (Dr)</div>
+          <div class="sl-stat-val sl-dr" id="sl-stat-dr">₹0</div>
+        </div>
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Total Payable (Cr)</div>
+          <div class="sl-stat-val sl-cr" id="sl-stat-cr">₹0</div>
+        </div>
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Net Balance</div>
+          <div class="sl-stat-val" id="sl-stat-net">₹0</div>
+        </div>
+      </div>
+
+      <!-- ── Payment Side Filter (PRIMARY de-duplication control) ── -->
+      <div style="background:#fff;border:2px solid var(--blue);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:.75rem;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem">
+        <span style="font-size:.72rem;font-weight:700;color:var(--blue);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap">Payment Side:</span>
+        <button class="sl-pay-filter-btn active" data-pay=""
+          onclick="window.__aifc.slSetPayFilter('')"
+          style="padding:.35rem .85rem;border:1px solid var(--slate-200);border-radius:9999px;font-size:.75rem;font-weight:600;background:#fff;color:var(--slate-600);cursor:pointer">
+          All Parties
+        </button>
+        <button class="sl-pay-filter-btn" data-pay="consignor"
+          onclick="window.__aifc.slSetPayFilter('consignor')"
+          style="padding:.35rem .85rem;border:1px solid var(--slate-200);border-radius:9999px;font-size:.75rem;font-weight:600;background:#fff;color:var(--slate-600);cursor:pointer">
+          Consignor (Sender Pays)
+        </button>
+        <button class="sl-pay-filter-btn" data-pay="consignee"
+          onclick="window.__aifc.slSetPayFilter('consignee')"
+          style="padding:.35rem .85rem;border:1px solid var(--slate-200);border-radius:9999px;font-size:.75rem;font-weight:600;background:#fff;color:var(--slate-600);cursor:pointer">
+          Consignee (Receiver Pays)
+        </button>
+        <span style="font-size:.7rem;color:var(--slate-400);margin-left:.25rem">
+          💡 Selecting a side prevents duplicate entries between Consignor &amp; Consignee
+        </span>
+      </div>
+
+      <!-- ── Balance / Status filter bar ── -->
+      <div class="sl-filter-bar">
+        <!-- Balance filters -->
+        <button class="sl-filter-btn" data-filter="all"    onclick="window.__aifc.slSetFilter('all')">All</button>
+        <button class="sl-filter-btn" data-filter="due"    onclick="window.__aifc.slSetFilter('due')">⚠ Pending</button>
+        <button class="sl-filter-btn dr" data-filter="debit"  onclick="window.__aifc.slSetFilter('debit')">🔴 Receivable</button>
+        <button class="sl-filter-btn cr" data-filter="credit" onclick="window.__aifc.slSetFilter('credit')">🟢 Payable</button>
+        <!-- Date range -->
+        <label style="font-size:.7rem;font-weight:600;color:var(--slate-500);margin-left:.25rem">From</label>
+        <input type="date" id="sl-df" class="fi-sm" style="width:130px" aria-label="Filter from date">
+        <label style="font-size:.7rem;font-weight:600;color:var(--slate-500)">To</label>
+        <input type="date" id="sl-dt" class="fi-sm" style="width:130px" aria-label="Filter to date">
+        <button class="btn btn-ghost" style="font-size:.72rem;padding:.35rem .6rem" onclick="window.__aifc.slApplyDateRange()">Apply</button>
+        <button class="btn btn-ghost" style="font-size:.72rem;padding:.35rem .6rem" onclick="window.__aifc.slClearDateRange()">Clear</button>
+        <!-- Search -->
+        <div class="sl-search-wrap">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <input type="text" class="fi" placeholder="Search company…" oninput="window.__aifc.slSearch(this.value)" aria-label="Search companies">
+        </div>
+      </div>
+
+      <!-- Hint shown when no LRs have paymentSide set -->
+      <div id="sl-pay-hint" style="display:none;background:#fef3c7;border:1px solid #fbbf24;border-radius:var(--radius);padding:.875rem 1rem;font-size:.8rem;color:#92400e;margin-bottom:1rem">
+        ⚠ No ledger entries found. To auto-populate this ledger, go to
+        <b>Create LR</b> or <b>Lorry Receipts</b> and set the <b>Payment Side</b>
+        (Consignor / Consignee) on each entry. Only LRs with Payment Side selected
+        will appear here — this prevents duplicate entries.
+      </div>
+
+      <!-- Company cards grid -->
+      <div class="sl-company-grid" id="sl-company-grid"></div>
+      <!-- Empty state -->
+      <div id="sl-list-empty" class="sl-empty" style="display:none">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+        <h3>No companies yet</h3>
+        <p>Click "Add Company" to start tracking a company's ledger, or entries will be auto-discovered from your LR data.</p>
+      </div>
+    </div>
+
+    <!-- ── DETAIL VIEW (per-company Tally-style table) ── -->
+    <div id="sl-view-detail" style="display:none">
+      <div class="sl-detail-header">
+        <button class="sl-back-btn" onclick="window.__aifc.slBack()">
+          <svg style="width:.85rem;height:.85rem" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+          Back to Ledger
+        </button>
+        <div class="sl-detail-title-block">
+          <div class="sl-detail-title" id="sl-detail-title">Company</div>
+          <div class="sl-detail-sub" id="sl-detail-sub"></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn btn-primary" onclick="window.__aifc.slAddEntry()">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+            Add Entry
+          </button>
+          <button class="btn btn-ghost" onclick="window.__aifc.slPrintCompany()">📄 PDF</button>
+          <button class="btn btn-ghost" onclick="window.__aifc.slShareCompany()">📲 Share</button>
+        </div>
+      </div>
+
+      <!-- Date filter for detail -->
+      <div class="sl-filter-bar" style="margin-bottom:.875rem">
+        <label style="font-size:.7rem;font-weight:600;color:var(--slate-500)">Filter Period:</label>
+        <input type="date" id="sl-detail-df" class="fi-sm" style="width:130px" aria-label="Detail view from date">
+        <label style="font-size:.7rem;font-weight:600;color:var(--slate-500)">to</label>
+        <input type="date" id="sl-detail-dt" class="fi-sm" style="width:130px" aria-label="Detail view to date">
+        <button class="btn btn-ghost" style="font-size:.72rem;padding:.35rem .6rem" onclick="window.__aifc.slDetailDateFilter()">Apply</button>
+        <button class="btn btn-ghost" style="font-size:.72rem;padding:.35rem .6rem" onclick="window.__aifc.slDetailDateClear()">Clear</button>
+      </div>
+
+      <!-- Summary stats -->
+      <div class="sl-detail-stats">
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Total Debit</div>
+          <div class="sl-stat-val sl-dr" id="sl-detail-stat-dr">₹0</div>
+        </div>
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Total Credit</div>
+          <div class="sl-stat-val sl-cr" id="sl-detail-stat-cr">₹0</div>
+        </div>
+        <div class="sl-stat-box">
+          <div class="sl-stat-label">Closing Balance</div>
+          <div class="sl-stat-val" id="sl-detail-stat-bal">Nil</div>
+        </div>
+      </div>
+
+      <!-- Tally-style ledger table -->
+      <div class="sl-tbl-wrap">
+        <table class="sl-tbl">
+          <thead>
+            <tr>
+              <th style="width:80px">Date</th>
+              <th>Particulars</th>
+              <th style="width:72px">Vch Type</th>
+              <th style="width:86px">Vch No.</th>
+              <th class="r" style="width:100px">Debit (Dr)</th>
+              <th class="r" style="width:100px">Credit (Cr)</th>
+              <th class="r" style="width:110px">Balance</th>
+              <th style="width:40px"></th>
+            </tr>
+          </thead>
+          <tbody id="sl-detail-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div><!-- /pg-ledger -->
+
+  <!-- ══ ENTRY MODAL — FIX: click-outside closes, Enter submits ══ -->
+  <div class="sl-modal-overlay" id="sl-entry-modal" role="dialog" aria-modal="true" aria-labelledby="sl-modal-title"
+       onclick="if(event.target===this)window.__aifc.slCloseEntryModal()">
+    <div class="sl-modal-box">
+      <div class="sl-modal-head">
+        <h3 id="sl-modal-title">Add Entry</h3>
+        <button class="sl-modal-close" onclick="window.__aifc.slCloseEntryModal()" aria-label="Close dialog">&#x2715;</button>
+      </div>
+
+      <!-- Debit / Credit toggle -->
+      <div class="sl-side-row">
+        <button class="sl-side-btn active" id="sl-btn-debit"
+          onclick="window.__aifc.slSetSide('debit')" data-active="1">
+          &#x1F534; Debit
+        </button>
+        <button class="sl-side-btn" id="sl-btn-credit"
+          onclick="window.__aifc.slSetSide('credit')" data-active="">
+          &#x1F7E2; Credit
+        </button>
+      </div>
+      <div class="sl-hint" id="sl-side-hint">
+        &#x1F4A1; Debit &#x2014; party owes you / you gave money
+      </div>
+
+      <!-- Form fields -->
+      <div class="sl-field">
+        <label>Company Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="sl-entry-company" class="fi" placeholder="Company name" autocomplete="off"
+          onkeydown="if(event.key==='Enter')document.getElementById('sl-entry-amount').focus()">
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem">
+        <div class="sl-field">
+          <label>Date <span style="color:var(--red)">*</span></label>
+          <input type="date" id="sl-entry-date" class="fi"
+            onkeydown="if(event.key==='Enter')document.getElementById('sl-entry-amount').focus()">
+        </div>
+        <div class="sl-field">
+          <label>Amount (&#x20B9;) <span style="color:var(--red)">*</span></label>
+          <input type="number" id="sl-entry-amount" class="fi" placeholder="0.00" step="0.01" min="0.01"
+            onkeydown="if(event.key==='Enter')document.getElementById('sl-entry-remarks').focus()">
+        </div>
+      </div>
+      <div class="sl-field">
+        <label>Voucher Type</label>
+        <select id="sl-entry-type" class="fi">
+          <option value="Payment">Payment</option>
+          <option value="Receipt">Receipt</option>
+          <option value="Journal">Journal</option>
+        </select>
+      </div>
+      <div class="sl-field">
+        <label>Remarks</label>
+        <input type="text" id="sl-entry-remarks" class="fi"
+          placeholder="e.g. Diesel charge, Trip payment, Advance&#x2026;"
+          onkeydown="if(event.key==='Enter')window.__aifc.slSaveEntry()">
+      </div>
+
+      <div class="sl-err" id="sl-entry-err"></div>
+
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem">
+        <button class="btn btn-ghost" onclick="window.__aifc.slCloseEntryModal()">Cancel</button>
+        <button class="btn btn-primary" id="sl-entry-save-btn" onclick="window.__aifc.slSaveEntry()">Save Entry</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ ADD COMPANY MODAL — FIX: click-outside, Enter key ═══════ -->
+  <div class="sl-modal-overlay" id="sl-add-co-modal" role="dialog" aria-modal="true" aria-labelledby="sl-add-co-title"
+       onclick="if(event.target===this)window.__aifc.slCloseAddCompany()">
+    <div class="sl-modal-box" style="max-width:400px">
+      <div class="sl-modal-head">
+        <h3 id="sl-add-co-title">Add Company to Ledger</h3>
+        <button class="sl-modal-close" onclick="window.__aifc.slCloseAddCompany()" aria-label="Close dialog">&#x2715;</button>
+      </div>
+      <div class="sl-field">
+        <label>Company Name <span style="color:var(--red)">*</span></label>
+        <input type="text" id="sl-co-name" class="fi" placeholder="e.g. Ramesh Traders"
+          onkeydown="if(event.key==='Enter')document.getElementById('sl-co-ob').focus()">
+      </div>
+      <div class="sl-field">
+        <label>Opening Balance (&#x20B9;)
+          <span style="font-size:.65rem;color:var(--slate-400);font-weight:400;text-transform:none;letter-spacing:0">
+            &#x2014; positive = they owe you (Dr), negative = you owe them (Cr)
+          </span>
+        </label>
+        <input type="number" id="sl-co-ob" class="fi" placeholder="0.00  (leave blank if zero)" step="0.01"
+          onkeydown="if(event.key==='Enter')window.__aifc.slSaveCompany()">
+      </div>
+      <div class="sl-err" id="sl-co-err"></div>
+      <div style="display:flex;gap:.5rem;justify-content:flex-end;margin-top:1rem">
+        <button class="btn btn-ghost" onclick="window.__aifc.slCloseAddCompany()">Cancel</button>
+        <button class="btn btn-primary" onclick="window.__aifc.slSaveCompany()">Add Company</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SETTINGS ── -->
+  <div class="page-content hidden" id="pg-settings">
+    <div class="page-header"><h1 class="page-title">Settings</h1></div>
+    <div id="sb-banner" style="display:none;background:#fef3c7;border:1px solid #fbbf24;border-radius:var(--radius);padding:.875rem 1rem;margin-bottom:1rem;font-size:.8rem;color:#92400e;align-items:center;gap:.75rem">
+      <svg style="width:1.1rem;height:1.1rem;flex-shrink:0" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <span>Supabase not configured. Enter your Project URL and Anon Key below to connect.</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1rem">
+
+      <div class="card" style="padding:1.25rem;grid-column:1/-1">
+        <div class="settings-section"><h3>🔗 Supabase Database Setup</h3>
+          <p style="font-size:.78rem;color:var(--slate-500);margin-bottom:.875rem">Go to your Supabase dashboard → Settings → API to find these values.</p>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.875rem">
+          <div class="form-group"><label class="form-label">Project URL</label><input type="url" id="s-sb-url" class="fi" placeholder="https://xxxx.supabase.co" autocomplete="off"></div>
+          <div class="form-group"><label class="form-label">Anon / Public Key</label><input type="password" id="s-sb-key" class="fi" placeholder="eyJh…" autocomplete="off"><p class="form-hint">The public anon key — safe for frontend use.</p></div>
+        </div>
+        <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center">
+          <button class="btn btn-primary" onclick="window.__aifc.saveSupabaseConfig()">Connect &amp; Save</button>
+          <button class="btn btn-ghost" onclick="window.__aifc.testConnection()">Test Connection</button>
+          <span id="sb-conn-status" style="font-size:.75rem;color:var(--slate-400)"></span>
+        </div>
+        <details style="margin-top:1.1rem">
+          <summary style="font-size:.78rem;font-weight:600;color:var(--blue);cursor:pointer;user-select:none">📋 Show SQL to create the Supabase table</summary>
+          <pre id="sb-schema-sql" style="margin-top:.75rem;background:#0f172a;color:#e2e8f0;border-radius:.5rem;padding:1rem;font-size:.7rem;overflow-x:auto;line-height:1.6"></pre>
+          <button class="btn btn-ghost" style="margin-top:.5rem;font-size:.72rem"
+            onclick="navigator.clipboard.writeText(document.getElementById('sb-schema-sql').textContent);this.textContent='Copied!';setTimeout(()=>this.textContent='Copy SQL',1500)">Copy SQL</button>
+        </details>
+      </div>
+
+      <div class="card" style="padding:1.25rem">
+        <div class="settings-section">
+          <h3>🏢 Company / Letterhead Details</h3>
+          <p style="font-size:.78rem;color:var(--slate-500);margin-bottom:.875rem">These appear on every PDF ledger report — match exactly what is on your letterhead.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:.75rem;margin-bottom:.75rem">
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Primary Company Name <span class="req">*</span>
+                <span style="font-weight:400;font-size:.65rem;text-transform:none;color:var(--slate-400)">— shown bold at top (e.g. VIDARBHA ROAD CARRIERS)</span>
+              </label>
+              <input type="text" id="s-company" class="fi" placeholder="e.g. VIDARBHA ROAD CARRIERS">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Secondary / Division Name
+                <span style="font-weight:400;font-size:.65rem;text-transform:none;color:var(--slate-400)">— shown below divider (e.g. ALL INDIA FAST CARRIERS)</span>
+              </label>
+              <input type="text" id="s-company2" class="fi" placeholder="e.g. ALL INDIA FAST CARRIERS">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Address Line 1</label>
+              <input type="text" id="s-addr1" class="fi" placeholder="e.g. 45B, PHASE-VTH, OPP. JEDIMETLA BUS DEPOT, BEHIND IOC">
+            </div>
+            <div class="form-group" style="grid-column:1/-1">
+              <label class="form-label">Address Line 2 / City</label>
+              <input type="text" id="s-addr2" class="fi" placeholder="e.g. IDA JEEDIMETLA HYDERABAD">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" id="s-email" class="fi" placeholder="e.g. info@yourcompany.com">
+            </div>
+            <div class="form-group">
+              <label class="form-label">GSTIN (optional)</label>
+              <input type="text" id="s-gst" class="fi" placeholder="e.g. 36ABCDE1234F1Z5" style="text-transform:uppercase">
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="window.__aifc.saveCompanyDetails()">Save Details</button>
+        </div>
+        <div class="settings-section">
+          <h3>🔐 Privacy PIN</h3>
+          <p style="font-size:.78rem;color:var(--slate-500);margin-bottom:.875rem">4-digit PIN to protect financial data.</p>
+          <div class="form-group" style="margin-bottom:.75rem"><label class="form-label">Current PIN</label><input type="password" id="s-cur-pin" class="fi" maxlength="4" placeholder="••••"></div>
+          <div class="form-group" style="margin-bottom:.75rem"><label class="form-label">New PIN</label><input type="password" id="s-new-pin" class="fi" maxlength="4" placeholder="4 digits"></div>
+          <div class="form-group" style="margin-bottom:.875rem"><label class="form-label">Confirm New PIN</label><input type="password" id="s-confirm-pin" class="fi" maxlength="4" placeholder="4 digits"></div>
+          <button class="btn btn-primary" onclick="window.__aifc.changePIN()">Update PIN</button>
+        </div>
+      </div>
+
+      <div class="card" style="padding:1.25rem">
+        <div class="settings-section">
+          <h3>📤 Data Operations</h3>
+          <p style="font-size:.78rem;color:var(--slate-500);margin-bottom:.875rem">Export your data or force a fresh sync.</p>
+          <div style="display:flex;flex-direction:column;gap:.5rem;margin-bottom:1rem">
+            <button class="btn btn-ghost" onclick="window.__aifc.exportAll()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+              Export All to Excel
+            </button>
+            <button class="btn btn-ghost" onclick="window.__aifc.forceSyncFromSupabase()">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+              Force Sync from Supabase
+            </button>
+          </div>
+        </div>
+        <div class="danger-zone">
+          <p style="font-size:.78rem;font-weight:600;color:var(--red);margin-bottom:.5rem">⚠ Danger Zone</p>
+          <p style="font-size:.72rem;color:var(--slate-500);margin-bottom:.75rem">Permanently deletes ALL entries from Supabase. Cannot be undone.</p>
+          <button class="btn btn-danger" onclick="window.__aifc.confirmClearAll()">Clear All Data</button>
+        </div>
+      </div>
+
+      <!-- ── DATABASE MIGRATION CARD ── -->
+      <div class="card" style="padding:1.25rem">
+        <div class="settings-section">
+          <h3>🔧 Database Migration</h3>
+          <p style="font-size:.78rem;color:var(--slate-500);margin-bottom:.875rem">
+            The <code style="background:var(--slate-100);padding:.1rem .35rem;border-radius:.25rem;font-size:.72rem">payment_side</code>
+            column must exist in your Supabase <code style="background:var(--slate-100);padding:.1rem .35rem;border-radius:.25rem;font-size:.72rem">entries</code>
+            table to save Payment Side (Consignor / Consignee) on each LR.
+            If you see a "column not found" error when saving, run this migration.
+          </p>
+
+          <!-- Status badge -->
+          <div style="display:flex;align-items:center;gap:.625rem;margin-bottom:.875rem;flex-wrap:wrap">
+            <span id="migration-badge" class="migration-badge warn">— Not checked yet —</span>
+            <button class="btn btn-ghost" style="font-size:.72rem;padding:.3rem .7rem"
+              onclick="window.__aifc.checkMigrationStatus()">
+              🔍 Check Status
+            </button>
+          </div>
+
+          <!-- Action buttons -->
+          <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:.75rem">
+            <button class="btn btn-primary" id="migration-run-btn"
+              onclick="window.__aifc.runMigration()">
+              ⚡ Run Migration
+            </button>
+            <button class="btn btn-ghost"
+              onclick="navigator.clipboard.writeText('ALTER TABLE entries ADD COLUMN IF NOT EXISTS payment_side TEXT CHECK (payment_side IN (\'consignor\',\'consignee\'));').then(()=>this.textContent='Copied!').catch(()=>{});setTimeout(()=>this.textContent='📋 Copy SQL',1500)"
+              style="font-size:.78rem">
+              📋 Copy SQL
+            </button>
+          </div>
+
+          <!-- Status / SQL output area -->
+          <div id="migration-status"></div>
+
+          <!-- Manual instructions collapse -->
+          <details style="margin-top:.875rem">
+            <summary style="font-size:.75rem;font-weight:600;color:var(--blue);cursor:pointer;user-select:none">
+              📖 How to run manually in Supabase
+            </summary>
+            <ol style="font-size:.75rem;color:var(--slate-600);margin-top:.625rem;padding-left:1.1rem;line-height:1.8">
+              <li>Open <a href="https://supabase.com/dashboard" target="_blank" style="color:var(--blue)">supabase.com/dashboard</a></li>
+              <li>Select your project → <b>SQL Editor</b> → <b>New query</b></li>
+              <li>Paste and run:
+                <pre style="background:#0f172a;color:#e2e8f0;padding:.625rem .875rem;border-radius:.4rem;font-size:.72rem;margin-top:.4rem;overflow-x:auto;cursor:copy"
+                  onclick="navigator.clipboard.writeText(this.textContent.trim()).then(()=>this.style.outline='2px solid #22c55e')"
+                  title="Click to copy">ALTER TABLE entries ADD COLUMN IF NOT EXISTS payment_side TEXT CHECK (payment_side IN ('consignor','consignee'));</pre>
+              </li>
+              <li>Click <b>Check Status</b> above to confirm it worked.</li>
+            </ol>
+          </details>
+        </div>
+      </div>
+
+      <div class="card" style="padding:1.25rem">
+        <div class="settings-section"><h3>ℹ️ Connection Info</h3></div>
+        <div id="db-info" style="font-size:.78rem;color:var(--slate-600);display:flex;flex-direction:column;gap:.4rem"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main-wrap -->
+
+<!-- ═══ PIN MODAL ═══ -->
+<div class="pin-overlay" id="pin-overlay" role="dialog" aria-modal="true" aria-label="Enter privacy PIN">
+  <div class="pin-box">
+    <div class="pin-title">🔐 Enter PIN</div>
+    <div class="pin-sub">Enter your 4-digit privacy PIN to view financial data</div>
+    <div class="pin-dots" id="pin-dots">
+      <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+    </div>
+    <div class="pin-err" id="pin-err"></div>
+    <div class="pin-keypad">
+      <button class="pin-key" onclick="window.__aifc.pinKey('1')">1</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('2')">2</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('3')">3</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('4')">4</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('5')">5</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('6')">6</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('7')">7</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('8')">8</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('9')">9</button>
+      <button class="pin-key cancel-key" onclick="window.__aifc.closePin()">Cancel</button>
+      <button class="pin-key" onclick="window.__aifc.pinKey('0')">0</button>
+      <button class="pin-key del" onclick="window.__aifc.pinDel()" aria-label="Delete last digit">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ ALERT MODAL ═══ -->
+<div class="modal-overlay hidden" id="alert-overlay" role="alertdialog" aria-modal="true" aria-labelledby="alert-title" aria-describedby="alert-msg">
+  <div class="modal-box" style="max-width:360px">
+    <h3 id="alert-title" style="font-size:.9rem;font-weight:700;margin-bottom:.5rem"></h3>
+    <p id="alert-msg" style="font-size:.8rem;color:var(--slate-600);margin-bottom:1.1rem;white-space:pre-wrap;line-height:1.6"></p>
+    <div id="alert-btns" style="display:flex;justify-content:flex-end;gap:.5rem"></div>
+  </div>
+</div>
+
+<!-- ═══ IMPORT PREVIEW MODAL ═══ -->
+<div class="modal-overlay hidden" id="imp-overlay" role="dialog" aria-modal="true" aria-labelledby="imp-modal-title">
+  <div class="modal-box" style="max-width:540px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+      <h3 id="imp-modal-title" style="font-size:.9rem;font-weight:700">Import Preview</h3>
+      <button onclick="window.__aifc.closeImportModal()" style="background:none;border:none;cursor:pointer;color:var(--slate-400);font-size:1.2rem" aria-label="Close import dialog">✕</button>
+    </div>
+    <div id="imp-summary" style="margin-bottom:.875rem"></div>
+    <div id="imp-err-wrap" style="display:none;margin-bottom:.875rem">
+      <p style="font-size:.72rem;font-weight:600;color:var(--red);margin-bottom:.4rem">Rows with errors (will be skipped):</p>
+      <div id="imp-err-list" style="max-height:140px;overflow-y:auto;background:#fef2f2;border:1px solid #fecaca;border-radius:.375rem;padding:.625rem;font-size:.72rem;color:#991b1b;line-height:1.7"></div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;gap:.5rem">
+      <button class="btn btn-ghost" onclick="window.__aifc.closeImportModal()">Cancel</button>
+      <button class="btn btn-primary" id="imp-confirm-btn" disabled onclick="window.__aifc.confirmImport()">Import 0 Rows</button>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" role="status" aria-live="polite" aria-atomic="false"></div>
+
+<!-- Vite entry point -->
+<script type="module" src="/js/main.js"></script>
+</body>
+</html>
