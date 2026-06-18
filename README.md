@@ -47,8 +47,6 @@ cp .env.example .env
 Edit `.env` and add your Supabase project URL and anon key:
 
 ```
-VITE_SUPABASE_URL=https://your-project-id.supabase.co
-VITE_SUPABASE_ANON_KEY=eyJhbGci...
 ```
 
 ### 3. Create the Supabase table
